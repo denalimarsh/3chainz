@@ -22,7 +22,7 @@ docs/node_modules
 # Data - ideally these don't exist
 baseapp/data/*
 client/lcd/keys/*
-cmd/gaiacli/statik/statik.go
+cmd/3zcli/statik/statik.go
 mytestnet
 
 # Testing

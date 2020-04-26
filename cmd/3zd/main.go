@@ -23,7 +23,7 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
-	"github.com/cosmos/gaia/app"
+	"github.com/denalimarsh/3chainz/app"
 )
 
 const flagInvCheckPeriod = "inv-check-period"
@@ -43,8 +43,8 @@ func main() {
 	ctx := server.NewDefaultContext()
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
-		Use:               "gaiad",
-		Short:             "Gaia Daemon (server)",
+		Use:               "3zd",
+		Short:             "3chainz Daemon (server)",
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 
@@ -67,7 +67,7 @@ func main() {
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
 	// prepare and add flags
-	executor := cli.PrepareBaseCmd(rootCmd, "GA", app.DefaultNodeHome)
+	executor := cli.PrepareBaseCmd(rootCmd, "TZ", app.DefaultNodeHome)
 	rootCmd.PersistentFlags().UintVar(&invCheckPeriod, flagInvCheckPeriod,
 		0, "Assert registered invariants every N blocks")
 	err := executor.Execute()
@@ -88,7 +88,7 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application
 		skipUpgradeHeights[int64(h)] = true
 	}
 
-	return app.NewGaiaApp(
+	return app.NewThreeChainzApp(
 		logger, db, traceStore, true, invCheckPeriod, skipUpgradeHeights,
 		viper.GetString(flags.FlagHome),
 		baseapp.SetPruning(store.NewPruningOptionsFromString(viper.GetString("pruning"))),
@@ -104,15 +104,15 @@ func exportAppStateAndTMValidators(
 ) (json.RawMessage, []tmtypes.GenesisValidator, *abci.ConsensusParams, error) {
 
 	if height != -1 {
-		gapp := app.NewGaiaApp(logger, db, traceStore, false, uint(1), map[int64]bool{}, "")
-		err := gapp.LoadHeight(height)
+		tzapp := app.NewThreeChainzApp(logger, db, traceStore, false, uint(1), map[int64]bool{}, "")
+		err := tzapp.LoadHeight(height)
 		if err != nil {
 			return nil, nil, nil, err
 		}
 
-		return gapp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
+		return tzapp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 	}
 
-	gapp := app.NewGaiaApp(logger, db, traceStore, true, uint(1), map[int64]bool{}, "")
-	return gapp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
+	tzapp := app.NewThreeChainzApp(logger, db, traceStore, true, uint(1), map[int64]bool{}, "")
+	return tzapp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 }

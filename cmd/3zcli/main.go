@@ -25,7 +25,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 
-	"github.com/cosmos/gaia/app"
+	"github.com/denalimarsh/3chainz/app"
 )
 
 var (
@@ -53,8 +53,8 @@ func main() {
 	// with the cdc
 
 	rootCmd := &cobra.Command{
-		Use:   "gaiacli",
-		Short: "Command line interface for interacting with gaiad",
+		Use:   "3zcli",
+		Short: "Command line interface for interacting with 3zd",
 	}
 
 	// Add --chain-id to persistent flags and mark it required
@@ -78,8 +78,8 @@ func main() {
 		flags.NewCompletionCmd(rootCmd, true),
 	)
 
-	// Add flags and prefix all env exposed with GA
-	executor := cli.PrepareMainCmd(rootCmd, "GA", app.DefaultCLIHome)
+	// Add flags and prefix all env exposed with TZ
+	executor := cli.PrepareMainCmd(rootCmd, "TZ", app.DefaultCLIHome)
 
 	err := executor.Execute()
 	if err != nil {

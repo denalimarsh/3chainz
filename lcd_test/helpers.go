@@ -50,7 +50,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
-	"github.com/cosmos/gaia/app"
+	"github.com/denalimarsh/3chainz/app"
 )
 
 var (
@@ -84,7 +84,7 @@ func InitializeLCD(
 	logger = log.NewFilter(logger, log.AllowError())
 
 	db := dbm.NewMemDB()
-	gapp := app.NewGaiaApp(logger, db, nil, true, 0, map[int64]bool{}, "", baseapp.SetPruning(store.PruneNothing))
+	tzapp := app.NewThreeChainzApp(logger, db, nil, true, 0, map[int64]bool{}, "", baseapp.SetPruning(store.PruneNothing))
 
 	genDoc, valConsPubKeys, valOperAddrs, privVal, err := defaultGenesis(config, nValidators, initAddrs, minting)
 	if err != nil {
@@ -109,7 +109,7 @@ func InitializeLCD(
 	// TODO Set to false once the upstream Tendermint proof verification issue is fixed.
 	viper.Set(flags.FlagTrustNode, true)
 
-	node, err := startTM(config, logger, genDoc, privVal, gapp)
+	node, err := startTM(config, logger, genDoc, privVal, tzapp)
 	if err != nil {
 		return
 	}
@@ -324,7 +324,7 @@ func defaultGenesis(config *tmcfg.Config, nValidators int, initAddrs []sdk.AccAd
 // TODO: Clean up the WAL dir or enable it to be not persistent!
 func startTM(
 	tmcfg *tmcfg.Config, logger log.Logger, genDoc *tmtypes.GenesisDoc,
-	privVal tmtypes.PrivValidator, app *app.GaiaApp,
+	privVal tmtypes.PrivValidator, app *app.ThreeChainzApp,
 ) (*nm.Node, error) {
 
 	genDocProvider := func() (*tmtypes.GenesisDoc, error) { return genDoc, nil }
